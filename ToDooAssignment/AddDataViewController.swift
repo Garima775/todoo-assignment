@@ -31,6 +31,8 @@ class AddDataViewController: UIViewController {
     }
     
     
+    
+    
     @IBAction func ADD(_ sender: UIButton) {
         
        db = Firestore.firestore()
@@ -105,6 +107,13 @@ class AddDataViewController: UIViewController {
 
          }
     }
+    
+    
+    @IBAction func CANCEL(_ sender: UIButton) {
+//        self.dismiss(animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     
     
 
