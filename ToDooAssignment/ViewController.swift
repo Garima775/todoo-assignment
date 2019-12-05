@@ -17,9 +17,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBOutlet weak var listTable: UITableView!
     
     var db:Firestore?
-    
+    var arr = ["sdada","dasdasd"]
     var dictionary = [[String:AnyObject]]()
-    
+    var indexDict = [String:AnyObject]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,24 +30,38 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dictionary.count
     }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 70
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")!
+        let cell:UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell")!
         
-        let index = dictionary[indexPath.row]
-        print("index",index)
+        indexDict = dictionary[indexPath.row]
         
         if let x = cell.viewWithTag(1) as? UILabel{
-            x.text = "dnnj"
+            x.text = indexDict["name"] as? String
         }
-        
         
         if let y = cell.viewWithTag(2) as? UILabel{
-            y.text = "dnnj"
+            y.text = indexDict["notes"] as? String
         }
-        
+    
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        indexDict = dictionary[indexPath.row]
+        self.performSegue(withIdentifier: "data", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "data"{
+            let vc = segue.destination as? AddDataViewController
+            vc!.dict = indexDict
+        }
+    }
+    
     
     
     func retrieveData(){
@@ -61,9 +75,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
             print("dict is",self.dictionary)
             
-            
+            self.listTable.reloadData()
         })
-        self.listTable.reloadData()
+        
     }
     
     

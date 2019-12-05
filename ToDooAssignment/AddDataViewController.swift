@@ -18,9 +18,18 @@ class AddDataViewController: UIViewController {
     
     @IBOutlet weak var name: UITextView!
     @IBOutlet weak var notes: UITextView!
-    
+    var dict = [String:AnyObject]()
     
     var db:Firestore?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        print("dict",dict)
+        
+        // Do any additional setup after loading the view.
+    }
+    
     
     @IBAction func ADD(_ sender: UIButton) {
         
@@ -49,15 +58,54 @@ class AddDataViewController: UIViewController {
     }
     
     @IBAction func DELETE(_ sender: UIButton) {
+        db = Firestore.firestore()
+        db?.collection("data").document((dict["docId"] as? String)!).delete(){
+            err in
+            if let error = err{
+                print(error.localizedDescription)
+                
+            }else{
+                print("document deleted successfully")
+                
+                let alert = UIAlertController(title: "Message", message: "Successfully Deleted", preferredStyle: .alert)
+                let okay = UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                    self.navigationController?.popViewController(animated: true)
+                })
+                alert.addAction(okay)
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        
     }
     
     @IBAction func UPDATE(_ sender: UIButton) {
-    }
-    override func viewDidLoad() {
-        super.viewDidLoad()
+        
+        db = Firestore.firestore()
+        
 
-        // Do any additional setup after loading the view.
+        let parameters = ["name":name.text!,"notes":notes.text!,"docId":dict["docId"]!,"completed":false] as [String : Any]
+
+         db?.collection("data").document((dict["docId"] as? String)!).updateData(parameters as [String : Any]){
+             err in
+             if let error = err{
+                 print(error.localizedDescription)
+                 
+             }else{
+                 print("document added successfully")
+                 
+                 let alert = UIAlertController(title: "Message", message: "Successfully Updated", preferredStyle: .alert)
+                 let okay = UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                     self.navigationController?.popViewController(animated: true)
+                 })
+                 alert.addAction(okay)
+                 self.present(alert, animated: true, completion: nil)
+                 
+                 
+             }
+
+         }
     }
+    
     
 
     /*
